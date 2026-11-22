@@ -1,0 +1,143 @@
+/* Mengimpor jenis huruf 'Inter' dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navigasi Pill-Tab di Header (sesuai tampilan pratinjau gelap) */
+.pill-tab {
+    color: #94a3b8;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.pill-tab:hover {
+    color: #f8fafc;
+}
+
+.pill-tab-active {
+    background-color: #1e293b;
+    color: #ffffff;
+    font-weight: 600;
+    border-color: #334155;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* Sakelar Mode Pemeriksaan (Periksa Foto vs Periksa Video) */
+.mode-pill {
+    color: #94a3b8;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.mode-pill:hover {
+    color: #ffffff;
+}
+
+.mode-pill-active {
+    background-color: #1e293b;
+    color: #34d399;
+    border-color: #334155;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* State dropzone saat berkas diseret */
+#dropzone.drag-active {
+    border-color: #10b981;
+    background-color: rgba(16, 185, 129, 0.06);
+}
+
+/* Kotak animasi scanning pada Loading State */
+.scan-line-box {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    background-color: #060b16;
+    border: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.scan-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #10b981, transparent);
+    animation: scanMove 1.6s ease-in-out infinite;
+}
+
+@keyframes scanMove {
+    0% {
+        top: 6px;
+    }
+    50% {
+        top: calc(100% - 9px);
+    }
+    100% {
+        top: 6px;
+    }
+}
+
+/* Indikator 3 langkah proses */
+.step-pill {
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #060b16;
+    border: 1px solid #1e293b;
+    color: #64748b;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.step-pill.step-active {
+    border-color: rgba(16, 185, 129, 0.45);
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+}
+
+.step-pill.step-done {
+    border-color: rgba(56, 189, 248, 0.35);
+    background-color: rgba(56, 189, 248, 0.08);
+    color: #7dd3fc;
+}
+
+/* Badge Status Keaslian */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.status-authentic {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.status-ai {
+    background-color: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.status-manipulated {
+    background-color: rgba(244, 63, 94, 0.15);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.status-suspicious {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
