@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthCheck - Verifikasi Keaslian Foto & Video</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#060b16] text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- ========================================================= -->
+    <!-- HEADER & PILL-TAB NAVIGATION                              -->
+    <!-- ========================================================= -->
+    <header class="border-b border-slate-800/80 bg-[#080f1e]/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+
+            <!-- Logo TruthCheck -->
+            <a href="#home" onclick="switchSection('home', event)" class="flex items-center space-x-2.5 shrink-0">
+                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center font-bold text-slate-950 text-lg shadow-lg shadow-emerald-500/25">
+                    ✓
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">Truth<span class="text-emerald-400">Check</span></span>
+            </a>
+
+            <!-- Pill-Tab Navigation di Tengah -->
+            <nav aria-label="Menu Utama" class="order-3 md:order-2 w-full md:w-auto flex justify-center">
+                <div class="inline-flex items-center bg-[#0c1528] border border-slate-800 rounded-full p-1 space-x-1">
+                    <button id="tab-home" type="button" onclick="switchSection('home')" class="pill-tab pill-tab-active px-5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition">
+                        Home / Analisis
+                    </button>
+                    <button id="tab-cara-kerja" type="button" onclick="switchSection('cara-kerja')" class="pill-tab px-5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition">
+                        Cara Kerja
+                    </button>
+                    <button id="tab-tentang-kami" type="button" onclick="switchSection('tentang-kami')" class="pill-tab px-5 py-1.5 rounded-full text-xs sm:text-sm font-medium transition">
+                        Tentang Kami
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Badge Kuota Tamu & Tombol Masuk / Daftar -->
+            <div class="order-2 md:order-3 flex items-center space-x-2.5 shrink-0">
+                <div id="guest-badge" class="flex items-center space-x-1.5 bg-[#0f182c] px-3.5 py-1.5 rounded-full border border-slate-700/80 text-xs text-slate-300">
+                    <span class="text-amber-400">⚡</span>
+                    <span>Tamu (Sisa: <strong id="quota-count" class="text-emerald-400 font-semibold">3/3</strong>)</span>
+                </div>
+                <button id="btn-auth-toggle" type="button" onclick="toggleLoginModal()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-4 py-1.5 rounded-full text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20 flex items-center space-x-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span>Masuk / Daftar</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================================= -->
+    <!-- KONTEN UTAMA                                              -->
+    <!-- ========================================================= -->
+    <main class="max-w-5xl mx-auto px-4 py-10 w-full flex-grow flex flex-col justify-center">
+
+        <!-- --------------------------------------------------------- -->
+        <!-- HALAMAN 1: HOME / ANALISIS                                -->
+        <!-- --------------------------------------------------------- -->
+        <section id="section-home" class="space-y-8">
+
+            <!-- Judul Utama Berada di Tengah -->
+            <div class="text-center">
+                <h1 class="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
+                    Bongkar Manipulasi Media & <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                        Temukan Sumber Aslinya
+                    </span>
+                </h1>
+                <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+                    Deteksi foto rekayasa AI, <em>deepfake</em> video, serta lacak tanggal dan platform pertama kali media diunggah di internet.
+                </p>
+            </div>
+
+            <!-- KARTU UPLOAD UTAMA -->
+            <div id="upload-card" class="bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 shadow-2xl relative">
+
+                <!-- Baris Header Mode Pemeriksaan -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 mb-6 border-b border-slate-800/80">
+                    <div class="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                        </svg>
+                        <span>MODE PEMERIKSAAN</span>
+                    </div>
+
+                    <div class="bg-[#070c17] p-1 rounded-xl border border-slate-800 flex items-center space-x-1">
+                        <button id="btn-mode-foto" type="button" onclick="switchMode('foto')" class="mode-pill mode-pill-active px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+                            <span>🖼️</span>
+                            <span>Periksa Foto</span>
+                            <span class="text-[11px] font-normal text-slate-300">(Maks 15MB)</span>
+                        </button>
+                        <button id="btn-mode-video" type="button" onclick="switchMode('video')" class="mode-pill px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+                            <span>🎥</span>
+                            <span>Periksa Video</span>
+                            <span class="text-[11px] font-normal text-slate-400">(Maks 50MB)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pesan Kesalahan Ramah Pengguna (Poka-Yoke) -->
+                <div id="error-alert" class="hidden mb-4 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs px-4 py-3 rounded-xl text-left"></div>
+
+                <!-- Dropzone Area -->
+                <div id="dropzone"
+                     class="border-2 border-dashed border-slate-700/90 hover:border-emerald-500/50 bg-[#080e1a] rounded-xl p-8 md:p-11 transition cursor-pointer flex flex-col items-center justify-center group text-center"
+                     onclick="document.getElementById('file-input').click()"
+                     ondragover="handleDragOver(event)"
+                     ondragleave="handleDragLeave(event)"
+                     ondrop="handleDrop(event)">
+
+                    <input type="file" id="file-input" class="hidden" accept="image/png, image/jpeg, image/webp" onchange="handleFileSelect(event)">
+
+                    <div class="w-16 h-16 bg-slate-800/80 group-hover:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-emerald-400 transition mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                    </div>
+
+                    <p class="text-base font-semibold text-white mb-1">
+                        Seret & Lepas Berkas di Sini, atau <span class="text-emerald-400 underline">Cari Berkas</span>
+                    </p>
+                    <p id="file-hint" class="text-xs text-slate-500">
+                        Mendukung JPG, PNG, WEBP (Maksimal 15 MB)
+                    </p>
+
+                    <!-- Preview Info File Terpilih -->
+                    <div id="file-info" class="hidden mt-4 bg-slate-800 px-4 py-2 rounded-lg text-xs text-slate-300 flex items-center space-x-2">
+                        <span>📄</span>
+                        <span id="filename" class="font-medium text-white">filename.jpg</span>
+                        <button type="button" onclick="clearFile(event)" class="text-rose-400 hover:text-rose-300 ml-2 font-bold">✕</button>
+                    </div>
+                </div>
+
+                <!-- 4 Tombol Uji Cepat (Preset Sample) -->
+                <div class="mt-5 pt-4 border-t border-slate-800/80 text-left">
+                    <p class="text-[11px] font-medium text-slate-400 mb-2.5">Atau coba simulasi cepat dengan sampel preset:</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <button type="button" onclick="selectPresetSample('ai')" class="bg-[#080e1a] hover:bg-slate-800/80 border border-slate-800 text-slate-300 px-3 py-2 rounded-lg transition text-left truncate">
+                            🤖 Foto AI Midjourney
+                        </button>
+                        <button type="button" onclick="selectPresetSample('deepfake')" class="bg-[#080e1a] hover:bg-slate-800/80 border border-slate-800 text-slate-300 px-3 py-2 rounded-lg transition text-left truncate">
+                            🎭 Video Deepfake
+                        </button>
+                        <button type="button" onclick="selectPresetSample('manipulated')" class="bg-[#080e1a] hover:bg-slate-800/80 border border-slate-800 text-slate-300 px-3 py-2 rounded-lg transition text-left truncate">
+                            ✂️ Foto Manipulasi
+                        </button>
+                        <button type="button" onclick="selectPresetSample('authentic')" class="bg-[#080e1a] hover:bg-slate-800/80 border border-slate-800 text-slate-300 px-3 py-2 rounded-lg transition text-left truncate">
+                            📷 Foto Asli Kamera
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tombol Submit -->
+                <button id="btn-submit" type="button" disabled
+                        class="w-full mt-5 py-3 px-6 rounded-xl font-semibold text-sm transition bg-slate-800 text-slate-500 cursor-not-allowed">
+                    Mulai Analisis Keaslian
+                </button>
+            </div>
+
+            <!-- KARTU LOADING / PROGRESS 3 LANGKAH -->
+            <div id="loading-card" class="hidden bg-[#0c1424] border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+                <div class="scan-line-box mx-auto mb-5">
+                    <div class="scan-bar"></div>
+                    <span class="text-2xl">🔍</span>
+                </div>
+                <h2 class="text-lg font-bold text-white mb-1.5">Sedang Menganalisis Media...</h2>
+                <p id="loading-step" class="text-xs sm:text-sm text-emerald-400 font-medium mb-5">
+                    1. Ekstraksi metadata & frame...
+                </p>
+
+                <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800 max-w-md mx-auto mb-6">
+                    <div id="progress-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 20%"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 max-w-2xl mx-auto text-left text-xs">
+                    <div id="step-1" class="step-pill step-active">1. Ekstraksi metadata & frame</div>
+                    <div id="step-2" class="step-pill">2. Deteksi manipulasi/AI</div>
+                    <div id="step-3" class="step-pill">3. Penelusuran sumber & jejak media</div>
+                </div>
+            </div>
+
+            <!-- DASBOR HASIL ANALISIS (RESULT VIEW) -->
+            <div id="result-card" class="hidden bg-[#0c1424] border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider text-slate-400">Dasbor Hasil Analisis</span>
+                        <h2 id="res-filename" class="text-xl font-bold text-white mt-0.5">-</h2>
+                        <p id="res-meta" class="text-xs text-slate-400 mt-1">-</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-[#070c17] border border-slate-800 rounded-xl px-4 py-2 text-right">
+                            <p class="text-[11px] text-slate-400">Skor Keaslian</p>
+                            <p id="res-score" class="text-lg font-bold text-white">0%</p>
+                        </div>
+                        <span id="res-status-badge" class="status-badge status-suspicious">Suspicious</span>
+                    </div>
+                </div>
+
+                <!-- Rincian Indikasi Manipulasi/AI & Kesimpulan -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-[#070c17] border border-slate-800 rounded-xl p-4">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Rincian Indikasi Manipulasi / AI</p>
+                        <p id="res-manipulation" class="text-slate-200 leading-relaxed">-</p>
+                    </div>
+                    <div class="bg-[#070c17] border border-slate-800 rounded-xl p-4">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Kesimpulan Analisis Singkat</p>
+                        <p id="res-conclusion" class="text-slate-200 leading-relaxed">-</p>
+                    </div>
+                </div>
+
+                <!-- Penelusuran Sumber & Jejak Media -->
+                <div class="bg-[#070c17] border border-slate-800 rounded-xl p-4 space-y-3 text-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Penelusuran Sumber & Jejak Media</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-[#0c1424] border border-slate-800/80 rounded-lg p-3">
+                            <span class="text-slate-400 block mb-1">Sumber Paling Awal</span>
+                            <strong id="res-first-source" class="text-white text-sm">-</strong>
+                        </div>
+                        <div class="bg-[#0c1424] border border-slate-800/80 rounded-lg p-3">
+                            <span class="text-slate-400 block mb-1">Platform Ditemukan</span>
+                            <strong id="res-platforms" class="text-cyan-300 text-sm">-</strong>
+                        </div>
+                        <div class="bg-[#0c1424] border border-slate-800/80 rounded-lg p-3">
+                            <span class="text-slate-400 block mb-1">Tanggal Publikasi</span>
+                            <strong id="res-pub-date" class="text-emerald-300 text-sm">-</strong>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block mb-1">Tautan Cocok</span>
+                        <ul id="res-links" class="space-y-1 text-xs text-emerald-400 break-all"></ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <p id="res-storage-note" class="text-xs text-slate-400"></p>
+                    <button type="button" onclick="resetToUpload()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-semibold px-4 py-2.5 rounded-lg transition">
+                        ← Periksa Media Lain
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIWAYAT PEMERIKSAAN SINGKAT -->
+            <div class="bg-[#0c1424]/80 border border-slate-800 rounded-2xl p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div>
+                        <h2 class="text-sm font-bold text-white">Riwayat Pemeriksaan Singkat</h2>
+                        <p id="history-mode-desc" class="text-xs text-slate-400">
+                            Tersimpan sementara di localStorage peramban. Klik item untuk melihat kembali hasil.
+                        </p>
+                    </div>
+                    <button type="button" onclick="clearLocalHistory()" class="text-xs text-slate-400 hover:text-rose-400 transition">
+                        Hapus Riwayat
+                    </button>
+                </div>
+                <ul id="history-list" class="space-y-2 text-xs text-slate-400">
+                    <li class="italic text-slate-500">Belum ada riwayat pemeriksaan.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- --------------------------------------------------------- -->
+        <!-- HALAMAN 2: CARA KERJA                                     -->
+        <!-- --------------------------------------------------------- -->
+        <section id="section-cara-kerja" class="hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">
+                    Bagaimana TruthCheck Bekerja?
+                </h2>
+                <p class="text-slate-400 text-sm md:text-base">
+                    TruthCheck menggabungkan 4 langkah forensik digital terstruktur untuk memastikan keabsahan gambar dan rekaman video secara objektif.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Kartu 01 -->
+                <div class="bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 space-y-4">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400 font-bold text-base">
+                        01
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1.5">Unggah & Validasi Format</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                            Pilih mode pemeriksaan Foto (JPG, PNG, WEBP hingga 15 MB) atau Video (MP4, MOV, WEBM hingga 50 MB). Sistem memvalidasi keutuhan berkas sebelum analisis berjalan.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu 02 -->
+                <div class="bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 space-y-4">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/25 flex items-center justify-center text-cyan-400 font-bold text-base">
+                        02
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1.5">Ekstraksi Metadata & Frame</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                            Membaca jejak metadata EXIF perangkat serta memecah video menjadi rangkaian cuplikan <em>frame</em> utama untuk pemeriksaan detail piksel.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu 03 -->
+                <div class="bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 space-y-4">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 font-bold text-base">
+                        03
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1.5">Deteksi Manipulasi / AI</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                            Menganalisis pola difusi generatif AI, artefak penyuntingan gambar, maupun inkonsistensi gerakan <em>deepfake</em> untuk menghitung skor keaslian.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu 04 -->
+                <div class="bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 space-y-4">
+                    <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/25 flex items-center justify-center text-purple-400 font-bold text-base">
+                        04
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-1.5">Penelusuran Sumber & Jejak Media</h3>
+                        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                            Menampilkan sumber publikasi paling awal, daftar platform yang memuat media serupa, tanggal unggah, serta tautan pembanding yang cocok.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --------------------------------------------------------- -->
+        <!-- HALAMAN 3: TENTANG KAMI                                   -->
+        <!-- --------------------------------------------------------- -->
+        <section id="section-tentang-kami" class="hidden bg-[#0c1424] border border-slate-800/90 rounded-2xl p-6 md:p-8 space-y-6">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-cyan-400">PROFIL PLATFORM</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Tentang TruthCheck</h2>
+                </div>
+                <button type="button" onclick="switchSection('home')" class="bg-[#162035] hover:bg-slate-700 border border-slate-700/80 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
+                    ← Ke Home / Analisis
+                </button>
+            </div>
+
+            <p class="text-sm text-slate-300 leading-relaxed">
+                TruthCheck dirancang sebagai platform verifikasi media visual untuk membantu pengguna media sosial dan masyarakat umum memeriksa keaslian foto maupun video, mengenali indikasi manipulasi atau konten AI, serta menelusuri jejak kemunculannya di internet.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Kartu Fitur 1 -->
+                <div class="bg-[#070c17] border border-slate-800/90 rounded-xl p-5 space-y-3">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        ⚡
+                    </div>
+                    <h3 class="font-bold text-white text-base">Akses Cepat Mode Tamu</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Pengguna dapat langsung mencoba verifikasi tanpa harus mendaftar di awal, dengan kuota pemeriksaan dan riwayat lokal di peramban.
+                    </p>
+                </div>
+
+                <!-- Kartu Fitur 2 -->
+                <div class="bg-[#070c17] border border-slate-800/90 rounded-xl p-5 space-y-3">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-white text-base">Akun Terdaftar</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Opsi Masuk / Daftar disiapkan agar riwayat pemeriksaan dapat dikelola lebih lanjut tanpa menghalangi akses Upload Zone.
+                    </p>
+                </div>
+
+                <!-- Kartu Fitur 3 -->
+                <div class="bg-[#070c17] border border-slate-800/90 rounded-xl p-5 space-y-3">
+                    <div class="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-white text-base">Antarmuka Jelas & Netral</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Menyajikan status keaslian, rincian temuan, dan sumber publikasi dalam tampilan terstruktur agar mudah dibaca.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================================= -->
+    <!-- MODAL LOGIN / REGISTER                                    -->
+    <!-- ========================================================= -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0c1424] border border-slate-800 rounded-2xl p-6 w-full max-w-md relative shadow-2xl">
+            <button type="button" onclick="toggleLoginModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
+            <h3 class="text-xl font-bold text-white mb-2">Masuk ke TruthCheck</h3>
+            <p class="text-xs text-slate-400 mb-6">Simpan riwayat verifikasi tanpa batas di seluruh perangkat Anda.</p>
+
+            <button type="button" onclick="loginWithGoogle()" class="w-full bg-white text-slate-950 font-semibold py-2.5 px-4 rounded-lg text-sm flex items-center justify-center space-x-2 mb-4 hover:bg-slate-100 transition">
+                <span>Google</span>
+                <span>Lanjutkan dengan Google</span>
+            </button>
+
+            <div class="relative my-4">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+                <div class="relative flex justify-center text-xs text-slate-500"><span class="bg-[#0c1424] px-2">atau</span></div>
+            </div>
+
+            <form onsubmit="handleEmailLogin(event)" class="space-y-3">
+                <input id="login-email" type="email" required placeholder="Alamat Email" class="w-full bg-[#070c17] border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                <input id="login-password" type="password" required placeholder="Kata Sandi" class="w-full bg-[#070c17] border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold py-2.5 rounded-lg text-sm transition">
+                    Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- FOOTER                                                    -->
+    <!-- ========================================================= -->
+    <footer class="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
+        &copy; 2026 TruthCheck. Platform Analisis Forensik & Verifikasi Media Digital.
+    </footer>
+
+    <!-- Menghubungkan ke berkas JavaScript eksternal -->
+    <script src="js/guest-auth.js"></script>
+    <script src="js/ui-state.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
